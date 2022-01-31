@@ -1,0 +1,44 @@
+{% extends "layout.html" %}
+{% block content %}
+{% include "navbar.html" %}
+
+<div class="container">
+    {% include "_messages.html" %}
+<div class="row">
+        {% for product in products %}
+        <div class="col-md-3 mt-3">
+            <div class="card">
+                <img src="{{url_for('static', filename='images/' + product.image_1)}}" alt="{{product.name}}" class="card-img-top" height="200">
+                <div class="card-body">
+                    <h5 class="text-center">{{product.name}}</h5>               
+                    {% if product.discount > 0 %}
+                    <h6 style="color:red; top:5%; left:2%; position:absolute; transform: rotate(-15deg);"> Discount ₱{{product.discount}} </h6>
+                    <p class="text-center"> Discounted Price ₱{{product.price - product.discount}}</p> 
+                    {% else %}
+                    <p class="text-center"> Regular Price ₱{{product.price}}</p>   
+                    {% endif%}
+                    
+                </div>
+                <div class="card-footer">
+                    <a href="{{url_for('getproductdetails', id=product.id)}}" class="float-start btn btn-sm btn-primary">Details</a>
+                    <form action="{{url_for('AddCart')}}" method='POST'>
+                        <input type="hidden", name="product_id" value ="{{product.id}}">
+                        <button type="submit" class="float-end btn btn-sm btn-warning">Add to Cart</button>       
+                        <input type="hidden" name="quantity" id ="" value ="1" min="1" max="{{product.stock}}">
+                        {% set colors = product.colors.split(',') %}       
+                        <select name="colors" id="colors" style="visibility: hidden;">
+                            {% for color in colors %}
+                            {% set col = color.split(':') %}
+                            <option value = "{{col[0]}}">{{col[0]|capitalize}}</option>
+                            {% endfor %}
+                        </select>
+                    </form>
+                </div>
+            </div>
+        </div>
+        {% endfor %}
+    </div>
+</div>
+{% endblock content %}
+
+

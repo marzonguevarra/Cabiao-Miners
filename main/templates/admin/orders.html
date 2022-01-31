@@ -1,0 +1,30 @@
+{% extends "layout.html" %}
+{% block content %}
+{% include "admin_navbar.html" %}
+<div class="container-sm mt-3">
+    {% include "_messages.html" %}
+    <table class="table table-sm table-condensed table-striped table-hover">
+        <thead>
+            <th scope="col">#</th>
+            <th scope="col">Invoice</th>
+            <th scope="col">Status</th>
+            <th scope="col">Date</th>
+            <th scope="col">View Details</th>
+            <th scope="col">Complete Order</th>
+        </thead>
+        <tbody>
+            {% for product in orders %}
+            <tr>
+                <th scope="row">{{loop.index}}</td>
+                <td>{{product.invoice}}</td>
+                <td>{{product.status}}</td>
+                <td>{{product.datecreated.strftime('%Y-%m-%d')}}</td>
+                <td><a href="{{url_for('orderdetails', invoice=product.invoice)}}" class="btn btn-sm btn-warning bi bi-search"> View </a></td>
+                <td><a href="{{url_for('orderdetails', invoice=product.invoice)}}" class="btn btn-sm btn-success bi bi-check-lg"> Complete </a></td>
+            </tr>
+            {% endfor %}
+        </tbody>
+    </table>
+</div>
+
+{% endblock content %}

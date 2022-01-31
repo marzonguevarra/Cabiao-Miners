@@ -1,0 +1,62 @@
+<!doctype html>
+<html lang="en">
+  <head>
+    <!-- Required meta tags -->
+    <meta charset="utf-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1">
+
+    <!-- Bootstrap CSS -->
+    <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.0.2/dist/css/bootstrap.min.css" rel="stylesheet" integrity="sha384-EVSTQN3/azprG1Anm3QDgpJLIm9Nao0Yz1ztcQTwFspd3yD65VohhpuuCOmLASjC" crossorigin="anonymous">
+
+    <title>Download PDF!</title>
+  </head>
+  <body>
+    <div class="container-sm mt-3">
+
+        <div class="row">
+            <div class="col-md-12">
+                <p>Invoice: {{orders.invoice}}</p> 
+                <p>Status: {{orders.status}}</p> 
+                <p>Customer Name: {{customer.name}}</p> 
+                <p>Customer Email: {{customer.email}}</p> 
+                <p>Customer Contact: {{customer.number}}</p> 
+            </div>
+        </div>
+        <table class="table table-sm table-condensed table-striped table-hover">
+            <thead>
+                <th scope="col">#</th>
+                <th scope="col">Name</th>
+                <th scope="col">Color</th>
+                <th scope="col">Price</th>
+                <th scope="col">Quantity</th>
+                <th scope="col">Total Discount</th>
+                <th scope="col">Subtotal</th>
+            </thead>
+            <tbody>
+                {% for key, product in orders.orders.items() %}
+                <tr>
+                    <th scope="row">{{loop.index}}</td>
+                    <td>{{product.name}}</td>
+                    <form action="{{url_for('updatecart', code=key)}}" method="POST">
+                    <td>{{product.color}}</td>
+                    <td>₱{{product.price}}</td>
+                    <td>{{product.quantity}}</td>
+                    {% set discount = "%0.2f" |format(product.discount|float * product.quantity|int) %}
+                    <td>₱{{discount}}</td>
+                    {% set subtotal = "%0.2f" |format(product.price|float * product.quantity|int - discount|float ) %}
+                    <td>₱{{subtotal}}</td>
+                </tr>
+                {% endfor %}
+
+                {% set grandtotal = "%0.2f" |format(grandtotal|float ) %}
+
+                <tr>
+                    <td></td>
+                    <td colspan="5"><h6>Grand Total: </h6></td>
+                    <td colspan="2"> <h6>₱{{grandtotal}}</h6></td>
+                </tr>
+            </tbody>
+        </table>
+    </div>
+  </body>
+</html>
