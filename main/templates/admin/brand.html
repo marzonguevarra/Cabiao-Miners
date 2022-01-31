@@ -1,0 +1,90 @@
+{% extends "layout.html" %}
+{% block content %}
+{% include "admin_navbar.html" %}
+{% include "_messages.html" %}
+
+<div class="container-sm mt-3">
+    <table class="table table-sm table-condensed table-striped table-hover">
+        <thead>
+            <th scope="col">#</th>
+            <th scope="col">Name</th>
+            <th scope="col">Edit</th>
+            <th scope="col">Delete</th>
+        </thead>
+        <tbody>
+
+            {% if brands %}
+            {% for brand in brands %}
+            <tr>
+                <th scope="row">{{ loop.index}}</td>
+                <td>{{ brand.name }}</td>
+                <td><a href="{{url_for('updatebrand', id=brand.id)}}" class="btn btn-sm btn-outline-info"> Edit  </a></td>
+                <td>
+                    <button type="button" class="btn btn-sm btn-outline-danger" data-bs-toggle="modal" data-bs-target="#Modal-{{brand.id}}">
+                        Delete
+                    </button>
+                </td>
+            </tr>
+            <!-- Modal -->
+              <div class="modal fade" id="Modal-{{brand.id}}" tabindex="-1" aria-labelledby="exampleModalLabel" aria-hidden="true">
+                <div class="modal-dialog">
+                  <div class="modal-content">
+                    <div class="modal-header">
+                      <h5 class="modal-title" id="exampleModalLabel">{{brand.name}}</h5>
+                      <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
+                    </div>
+                    <div class="modal-body">
+                      <div class="span">Are you sure you want to delete {{brand.name}} ? </div>
+                    </div>
+                    <div class="modal-footer">
+                      <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">Cancel</button>
+                      <form action="{{url_for('deletebrand', id=brand.id)}}" method="POST">
+                        <button type="submit" class="btn btn-danger btn-sm">Delete</button>
+                      </form>       
+                    </div>
+                  </div>
+                </div>
+              </div>
+            {% endfor %}
+
+            {% else %}
+
+            {% for category in categories %}
+            <tr>
+                <th scope="row">{{ loop.index}}</td>
+                <td>{{ category.name }}</td>
+                <td><a href="{{url_for('updatecategory', id=category.id)}}" class="btn btn-sm btn-outline-info"> Edit  </a></td>
+                <td>
+                    <button type="button" class="btn btn-sm btn-outline-danger" data-bs-toggle="modal" data-bs-target="#Modal-{{category.id}}">
+                        Delete
+                    </button>
+                </td>
+            </tr>
+            <!-- Modal -->
+            <div class="modal fade" id="Modal-{{category.id}}" tabindex="-1" aria-labelledby="exampleModalLabel" aria-hidden="true">
+              <div class="modal-dialog">
+                <div class="modal-content">
+                  <div class="modal-header">
+                    <h5 class="modal-title" id="exampleModalLabel">{{category.name}}</h5>
+                    <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
+                  </div>
+                  <div class="modal-body">
+                    <div class="span">Are you sure you want to delete {{category.name}} ? </div>
+                  </div>
+                  <div class="modal-footer">
+                    <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">Cancel</button>
+                    <form action="{{url_for('deletecategory', id=category.id)}}" method="POST">
+                      <button type="submit" class="btn btn-danger btn-sm">Delete</button>
+                    </form>       
+                  </div>
+                </div>
+              </div>
+            </div>
+            {% endfor %}
+
+            {% endif %}
+        </tbody>
+    </table>
+</div>
+
+{% endblock content %}

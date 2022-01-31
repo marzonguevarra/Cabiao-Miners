@@ -1,0 +1,56 @@
+{% extends "layout.html" %}
+{% block content %}
+{% include "admin_navbar.html" %}
+
+<div class="container">
+    <div class="row">
+            <div class="col-md-3">     </div>
+        <div class="col-md-6"> 
+            {% include "_messages.html" %}
+            <div class='text-center h3'> Add Product </div>
+            {% from "_formhelpers.html" import render_field %}
+            <form action="" method="POST" enctype="multipart/form-data">
+                {{render_field(form.name, class='form-control form-control-sm', placeholder="Add product name")}}
+                {{render_field(form.price, class='form-control form-control-sm', placeholder="Add product price")}}
+                {{render_field(form.discount, class='form-control form-control-sm', placeholder="Add product discount")}}
+                {{render_field(form.stock, class='form-control form-control-sm', placeholder="Add product stock")}}
+
+                <label for="brand"> Add a brand </label>
+                <select name ="brand", id="brand", class="form-control form-control-sm" required>
+                    <option> Select a brand </option>
+                    {% for brand in brands %}
+                    <option value="{{brand.id}}"> {{brand.name}} </option>
+                    {% endfor %}
+                </select>
+
+                <label for="category"> Add a category </label>
+                <select name ="category", id="category", class="form-control form-control-sm" required>
+                    <option> Select a category </option>
+                    {% for category in categories %}
+                    <option value="{{category.id}}"> {{category.name}} </option>
+                    {% endfor %}
+                </select>
+
+                {{render_field(form.colors, class='form-control form-control-sm', placeholder="Add product colors")}}
+                {{render_field(form.description, class='form-control form-control-sm', placeholder="Add product details", row="10")}}
+            <div class="container">
+                <div class="row">
+                    <div class="mb-3">
+                        <div class="form-control form-control-sm">{{ render_field(form.image_1, class="form-control, required")}}</div>
+                    </div>
+                    <div class="mb-3">
+                        <div class="form-control form-control-sm">{{ render_field(form.image_2, class="form-control, required")}}</div>
+                    </div>
+                    <div class="mb-3">
+                        <div class="form-control form-control-sm">{{ render_field(form.image_3, class="form-control, required")}}</div>
+                    </div>
+
+                </div>
+            </div>
+                <button type ="submit" class="btn btn-info mt-2"> Add Product </button>
+            </form>
+        </div>
+        <div class="col-md-3"> </div>
+</div>
+
+{% endblock content %}

@@ -1,0 +1,65 @@
+{% extends "layout.html" %}
+{% block content %}
+{% include "navbar.html" %}
+
+<div class="container">
+    <div class="row mt-3">
+        <div class="col-md-6" id="l_product_image">
+            <img src="{{url_for('static', filename='images/' + product.image_1)}}" alt="{{product.image_1}}" 
+            width="370" height="370">
+        </div>
+        <div class="col-md-6">
+            <p><h4>Product Name: {{product.name}}</h4></p>
+            {% if product.discount > 0 %}
+            <p> Original Price: ₱{{product.price}}</p>
+            <p> Discount: ₱{{product.discount}}</p>
+            <p> New Price: ₱{{product.price - product.discount}} </p>
+            {% else %}
+            <p> Regular Price: ₱{{product.price}}</p>
+            {% endif %}
+            <b> Product Description </b>
+            <p> {{product.description}}</p>
+            <form action="{{url_for('AddCart')}}" method='POST'>
+                <input type="hidden", name="product_id" value ="{{product.id}}">
+                <button type="submit" class="float-end btn btn-sm btn-warning">Add to Cart</button>
+                <label for="quantity"> Quantity: </label>
+                <input type="number" name="quantity" id ="" value ="1" min="1" max="{{product.stock}}">
+                {% set colors = product.colors.split(',') %}
+                <label for="colors"> Colors: </label>
+                <select name="colors" id="colors" >
+                    {% for color in colors %}
+                    {% set col = color.split(':') %}
+                    <option value = "{{col[0]}}">{{col[0]|title}}</option>
+                    {% endfor %}
+                </select>
+            </form>
+
+        </div>
+    </div>
+
+    <div class="row">
+        <div class="col-md-6 mt-1" id='s_product_image'>
+            <img src="{{url_for('static', filename='images/' + product.image_1)}}" alt="{{product.image_1}}"
+            width="120" height="120" class='p-3'> 
+            <img src="{{url_for('static', filename='images/' + product.image_2)}}" alt="{{product.image_2}}"
+            width="120" height="120" class='p-3'> 
+            <img src="{{url_for('static', filename='images/' + product.image_3)}}" alt="{{product.image_3}}" 
+            width="120" height="120" class='p-3'>
+        </div>
+    </div>
+</div>
+
+<script>
+    var l_product_image = document.getElementById('l_product_image');
+    var s_product_image = document.getElementById('s_product_image').getElementsByTagName('img');
+    for(var i = 0; i < s_product_image.length; i++){
+        s_product_image[i].addEventListener('click', full_image);
+    }
+
+    function full_image(){
+        var ImageSRC = this.getAttribute('src');
+        l_product_image.innerHTML = "<img src=" + ImageSRC + " width='370' height='370'>";
+    }
+
+</script>
+{% endblock content %}
