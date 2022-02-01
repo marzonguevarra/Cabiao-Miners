@@ -9,7 +9,8 @@ import os
 
 basedir = os.path.abspath(os.path.dirname(__file__))
 app = Flask(__name__)
-app.config['SQLALCHEMY_DATABASE_URI'] = 'sqlite:///cabiaominer.db'
+# app.config['SQLALCHEMY_DATABASE_URI'] = 'sqlite:///cabiaominer.db'
+app.config['SQLALCHEMY_DATABASE_URI'] = 'mysql://root:password123!@localhost/dbcabiaominers'
 app.config['SECRET_KEY']='ramlnyangforeversserdf'
 app.config['UPLOADED_PHOTOS_DEST'] = os.path.join(basedir, 'static/images')
 app.config['SQLALCHEMY_TRACK_MODIFICATIONS'] = True
