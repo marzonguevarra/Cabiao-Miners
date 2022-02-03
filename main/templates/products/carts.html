@@ -1,59 +1,84 @@
 {% extends "layout.html" %}
 {% include "navbar.html" %}
 {% block content %}
+<link rel="stylesheet" href="{{ url_for('static', filename='css/carts.css')}}">
+{% include "_messages.html" %}
 
-<div class="container-sm mt-3">
-    {% include "_messages.html" %}
-    <table class="table table-sm table-condensed table-striped table-hover">
-        <thead>
-            <th scope="col">#</th>
-            <th scope="col">Image</th>
-            <th scope="col">Name</th>
-            <th scope="col">Color</th>
-            <th scope="col">Price</th>
-            <th scope="col">Quantity</th>
-            <th scope="col">Total Discount</th>
-            <th scope="col">Subtotal</th>
-            <th scope="col"></th>
-            <th scope="col"></th>
-        </thead>
-        <tbody>
-            {% for key, product in session['Shoppingcart'].items() %}
-            <tr>
-                <th scope="row">{{loop.index}}</td>
-                <td><img src="{{ url_for('static', filename='images/' + product.image)}}" alt="{{product.name}}" width="50", height="50"> </td>
-                <td>{{product.name}}</td>
-                <form action="{{url_for('updatecart', code=key)}}" method="POST">
-                <td>
-                    {% set colors = product.colors.split(',') %}
-                    <select class ="form-select form-select-sm" name="color" id="color" >
-                        <option value = "{{product.color}}" style="display: none;"> {{product.color|capitalize}} </option>
-                        {% for color in colors %}
-                        {% set col = color.split(':') %}
-                        <option value = "{{col[0]}}"> {{col[0]|capitalize}} </option>
-                        {% endfor %}
-                </select>               
-                </td>
-                <td>₱{{product.price}}</td>
-                <td><input type="number" name="quantity" value="{{product.quantity}}" min="1" max="{{product.stock}}"></td>
-                {% set discount = "%0.2f" |format(product.discount|float * product.quantity|int) %}
-                <td>₱{{discount}}</td>
-                {% set subtotal = "%0.2f" |format(product.price|float * product.quantity|int - discount|float ) %}
-                <td>₱{{subtotal}}</td>
-                <td><button type='submit' class="btn btn-sm btn-info bi bi-pen">Update</buttom></td>
-                </form>
-                <td><a href="{{url_for('deleteitem', id=key)}}" class="btn btn-sm btn-danger bi bi-eraser">Remove</a></td>
-            </tr>
-            {% endfor %}
-            <tr>
-                <td colspan="2"></td>
-                <td colspan="2"> <h6>Grand Total : {{grandtotal}}</h6></td>
-                <td colspan="4"></td>
-                <td><a href="{{url_for('get_order')}}" class="btn btn-sm btn-warning bi bi-check-lg">Check Out</a></td>
-                <td><a href="{{url_for('clearcart')}}" class="btn btn-sm btn-danger bi bi-x-lg"> Clear Cart </a></td>
-            </tr>
-        </tbody>
-    </table>
+  <div class="row" style="overflow-x:auto;">
+    <div class="col-25"> 
+        <table class="table table-sm ">
+            <thead>
+                <th scope="col">Customer Name</th>
+                <th scope="col">Delivery Address</th>
+                <th scope="col">Contact Number</th>
+            </thead>
+            <tbody>
+                <tr>
+                    <td>{{current_user.name}}</td>
+                    <td>{{current_user.address}}</td>
+                    <td>{{current_user.number}}</td>
+                </tr>
+            </tbody>
+        </table>
+        <table class="table table-sm table-hover">
+            <thead>
+                <th scope="col">Subtotal</th>
+                <th scope="col">Discount</th>
+                <th scope="col">Grand Total</th>
+            </thead>
+            <tbody>
+                <tr>
+                    <td>₱{{subtotals}}</td>
+                    <td>₱{{discounts}}</td>
+                    <td>₱{{grandtotals}}</td>
+                <tr>
+                    <td colspan="1"></td>
+                    <td><a href="{{url_for('get_order')}}" class="btn btn-sm btn-warning bi bi-check-lg">Check Out</a></td>
+                    <td><a href="{{url_for('clearcart')}}" class="btn btn-sm btn-danger bi bi-x-lg"> Clear Cart </a></td>
+                </tr>
+            </tbody>
+        </table>
+    </div>
+  <div class="col-75">    
+        <table class="table table-sm table-hover">
+            <thead>
+                <th scope="col">#</th>
+                <th scope="col">Image</th>
+                <th scope="col">Name</th>
+                <th scope="col">Color</th>
+                <th scope="col">Price</th>
+                <th scope="col">Quantity</th>
+                <th scope="col">Discount</th>
+                <th scope="col"></th>
+                <th scope="col"></th>
+            </thead>
+            <tbody>
+                {% for key, product in session['Shoppingcart'].items() %}
+                <tr>
+                    <th scope="row">{{loop.index}}</td>
+                    <td><img src="{{ url_for('static', filename='images/' + product.image)}}" alt="{{product.name}}" width="50", height="50"> </td>
+                    <td>{{product.name}}</td>
+                    <form action="{{url_for('updatecart', code=key)}}" method="POST">
+                    <td>
+                        {% set colors = product.colors.split(',') %}
+                        <select class ="form-select form-select-sm" name="color" id="color" >
+                            <option value = "{{product.color}}" style="display: none;"> {{product.color|capitalize}} </option>
+                            {% for color in colors %}
+                            {% set col = color.split(':') %}
+                            <option value = "{{col[0]}}"> {{col[0]|capitalize}} </option>
+                            {% endfor %}
+                    </select>               
+                    </td>
+                    <td>₱{{product.price}}</td>
+                    <td><input type="number" name="quantity" value="{{product.quantity}}" min="1" max="{{product.stock}}"></td>
+                    <td>₱{{product.discount}}</td>
+                    <td><button type='submit' class="btn btn-sm btn-info bi bi-pen">Update</buttom></td>
+                    </form>
+                    <td><a href="{{url_for('deleteitem', id=key)}}" class="btn btn-sm btn-danger bi bi-eraser">Remove</a></td>
+                </tr>
+                {% endfor %}
+            </tbody>
+        </table>
+    </div>
 </div>
-
 {% endblock content %}

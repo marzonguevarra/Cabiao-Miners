@@ -16,20 +16,20 @@ def categories():
 def home():
     page = request.args.get('page',1, type=int)
     products = tblProducts.query.filter(tblProducts.stock > 0).order_by(tblProducts.id.desc()).paginate(page=page, per_page=8)
-    return render_template('products/index.html', products=products, brands=brands(), categories=categories(), title = "Cabiao Miners ")
+    return render_template('products/index.html', products=products, brands=brands(), categories=categories(), title = "Online Miners ")
 
 @app.route('/result')
 def result():
     searchword = request.args.get('q')
     products = tblProducts.query.msearch(searchword, fields=['name','description'], limit=3)
-    return render_template('products/result.html', products=products, brands=brands(), categories=categories() , title = "Cabiao Miners | " + searchword) 
+    return render_template('products/result.html', products=products, brands=brands(), categories=categories() , title = "Online Miners | " + searchword) 
 
 
 @app.route('/productdetails/<int:id>')
 def getproductdetails(id):
     product = tblProducts.query.get_or_404(id)
     get_product = tblProducts.query.filter_by(id=id).first_or_404()
-    return render_template('products/productdetails.html', product=product, brands=brands(), categories=categories(), get_product=get_product, title = "Cabiao Miners | " + get_product.name) 
+    return render_template('products/productdetails.html', product=product, brands=brands(), categories=categories(), get_product=get_product, title = "Online Miners | " + get_product.name) 
 
 
 @app.route('/filterbybrand/<int:id>')
@@ -37,14 +37,14 @@ def getbrandfilter(id):
     page = request.args.get('page',1, type=int)
     get_brand = Brand.query.filter_by(id=id).first_or_404()
     brand = tblProducts.query.filter_by(brand = get_brand).paginate(page=page, per_page=8)
-    return render_template('products/index.html', brand=brand, brands=brands(), categories=categories(), get_brand=get_brand, title = "Cabiao Miners | " + get_brand.name)
+    return render_template('products/index.html', brand=brand, brands=brands(), categories=categories(), get_brand=get_brand, title = "Online Miners | " + get_brand.name)
 
 @app.route('/filterbycategory/<int:id>')
 def getcategoryfilter(id):
     page = request.args.get('page',1, type=int)
     get_category = Category.query.filter_by(id=id).first_or_404()
     category = tblProducts.query.filter_by(category = get_category).paginate(page=page, per_page=8)
-    return render_template('products/index.html', category=category, categories=categories(), brands=brands(), get_category=get_category, title = "Cabiao Miners | " + get_category.name)
+    return render_template('products/index.html', category=category, categories=categories(), brands=brands(), get_category=get_category, title = "Online Miners | " + get_category.name)
 
 
 # Brand
