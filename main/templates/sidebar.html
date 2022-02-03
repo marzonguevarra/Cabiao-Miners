@@ -1,0 +1,85 @@
+<link rel="stylesheet" href="{{ url_for('static', filename='css/sidebar.css')}}">
+
+    <!-- Vertical navbar -->
+<nav class="vertical-nav bg-white" id="sidebar">
+    <div class="py-4 px-3 mb-4 bg-light">
+      <div class="media d-flex align-items-center">
+        <img loading="lazy" src="{{url_for('static', filename='images/' + session['profile'])}}" alt="..." width="50" height="50" class="mr-3 rounded-circle img-thumbnail shadow-sm">
+
+        <div class="media-body">
+          <h6 class="m-0">{{session['name']}}</h6>
+          <p class="font-weight-normal text-muted mb-0">{{session['role']}}</p>
+        </div>
+      </div>
+    </div>
+  
+    <p class="text-gray font-weight-bold text-uppercase px-3 small pb-4 mb-0">Dashboard</p>
+  
+    <ul class="nav flex-column bg-white mb-0">
+      <li class="nav-item">
+        <a href="/admin" class="nav-link text-dark bg-light">
+                  <i class="fa fa-th-large mr-3 text-primary fa-fw"></i>
+                  Products
+              </a>
+      </li>
+      <li class="nav-item">
+        <a href="/admin/brands" class="nav-link text-dark">
+                  <i class="fa fa-address-card mr-3 text-primary fa-fw"></i>
+                  Brands
+              </a>
+      </li>
+      <li class="nav-item">
+        <a href="/admin/categories" class="nav-link text-dark">
+                  <i class="fa fa-cubes mr-3 text-primary fa-fw"></i>
+                  Categories
+              </a>
+      </li>
+    </ul>
+  
+    <p class="text-gray font-weight-bold text-uppercase px-3 small py-4 mb-0">Add Items</p>
+  
+    <ul class="nav flex-column bg-white mb-0">
+      <li class="nav-item">
+        <a href="/addproduct" class="nav-link text-dark">
+                  <i class="fa fa-area-chart mr-3 text-primary fa-fw"></i>
+                  Product
+              </a>
+      </li>
+      <li class="nav-item">
+        <a href="/addbrand" class="nav-link text-dark">
+                  <i class="fa fa-bar-chart mr-3 text-primary fa-fw"></i>
+                  Brand
+              </a>
+      </li>
+      <li class="nav-item">
+        <a href="/addcategory" class="nav-link text-dark">
+                  <i class="fa fa-pie-chart mr-3 text-primary fa-fw"></i>
+                  Category
+              </a>
+      </li>
+    </ul>
+
+    <p class="text-gray font-weight-bold text-uppercase px-3 small py-4 mb-0">Manage</p>
+  
+    <ul class="nav flex-column bg-white mb-0">
+      <li class="nav-item">
+        <a href="/orderlists" class="nav-link text-dark">
+                  <i class="fa fa-area-chart mr-3 text-primary fa-fw"></i>
+                  Manage Orders<span class="badge badge-danger"> </span>
+              </a>
+      </li>
+
+    </ul>
+
+    <ul class="nav flex-column bg-white mb-0">
+      <li class="nav-item">
+          <a href="/admin/logout" class="nav-link text-dark">
+              <i class="fa fa-sign-out mr-3 text-primary fa-fw" ></i>
+              <span class="text nav-text">Logout</span>
+          </a>
+    </ul>
+
+</nav>
+  <!-- End vertical navbar -->
+  
+  

@@ -1,26 +1,27 @@
 {% extends "layout.html" %}
+{% include "sidebar.html" %}
 {% block content %}
-{% include "admin_navbar.html" %}
-<div class="container-sm mt-3">
-    {% include "_messages.html" %}
-    <table class="table table-sm table-condensed table-striped table-hover">
+{% include "_messages.html" %}
+<div style="overflow-x:auto;">
+    <h5>Open Orders</h5>
+    <table class="table table-sm table-hover">
         <thead>
-            <th scope="col">#</th>
-            <th scope="col">Invoice</th>
-            <th scope="col">Status</th>
-            <th scope="col">Date</th>
-            <th scope="col">View Details</th>
-            <th scope="col">Complete Order</th>
+            <th class="text-center" scope="col">#</th>
+            <th class="text-center" scope="col">Invoice</th>
+            <th class="text-center" scope="col">Customer</th>
+            <th class="text-center" scope="col">Status</th>
+            <th class="text-center" scope="col">Date</th>
+            <th class="text-center" scope="col"></th>
         </thead>
         <tbody>
-            {% for product in orders %}
+            {% for order,customer in orders %}
             <tr>
-                <th scope="row">{{loop.index}}</td>
-                <td>{{product.invoice}}</td>
-                <td>{{product.status}}</td>
-                <td>{{product.datecreated.strftime('%Y-%m-%d')}}</td>
-                <td><a href="{{url_for('orderdetails', invoice=product.invoice)}}" class="btn btn-sm btn-warning bi bi-search"> View </a></td>
-                <td><a href="{{url_for('orderdetails', invoice=product.invoice)}}" class="btn btn-sm btn-success bi bi-check-lg"> Complete </a></td>
+                <th  class="text-center" scope="row">{{loop.index}}</td>
+                <td class="text-center">{{order.invoice}}</td>
+                <td class="text-center">{{customer.name}}</td>
+                <td class="text-center">{{order.status}}</td>
+                <td class="text-center">{{order.datecreated.strftime('%Y-%m-%d')}}</td>
+                <td class="text-center"><a href="{{url_for('orderdetails', invoice=order.invoice)}}" class="btn btn-sm btn-info bi bi-search"> View </a></td>
             </tr>
             {% endfor %}
         </tbody>

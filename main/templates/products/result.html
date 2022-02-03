@@ -1,6 +1,7 @@
 {% extends "layout.html" %}
-{% block content %}
 {% include "navbar.html" %}
+{% block content %}
+
 
 <div class="container">
     {% include "_messages.html" %}
@@ -20,10 +21,10 @@
                     
                 </div>
                 <div class="card-footer">
-                    <a href="{{url_for('getproductdetails', id=product.id)}}" class="float-start btn btn-sm btn-primary">Details</a>
+                    <a href="{{url_for('getproductdetails', id=product.id)}}" class="float-left btn btn-sm btn-primary">Details</a>
                     <form action="{{url_for('AddCart')}}" method='POST'>
                         <input type="hidden", name="product_id" value ="{{product.id}}">
-                        <button type="submit" class="float-end btn btn-sm btn-warning">Add to Cart</button>       
+                        <button type="submit" class="float-right btn btn-sm btn-warning">Add to Cart</button>       
                         <input type="hidden" name="quantity" id ="" value ="1" min="1" max="{{product.stock}}">
                         {% set colors = product.colors.split(',') %}       
                         <select name="colors" id="colors" style="visibility: hidden;">

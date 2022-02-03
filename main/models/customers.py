@@ -15,6 +15,7 @@ class tblCustomers(db.Model, UserMixin):
     password = db.Column(db.String(80), unique=False)
     address = db.Column(db.String(120), unique=False)
     number = db.Column(db.String(50), unique=True)
+    role = db.Column(db.String(45), unique=False, nullable=False, default='Customer')
     profile = db.Column(db.String(80), unique=False, default='profile.jpg')
     datecreated = db.Column(db.DateTime, nullable=False, default=datetime.now)
     

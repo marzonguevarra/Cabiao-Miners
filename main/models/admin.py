@@ -6,6 +6,7 @@ class tblAdmins(db.Model):
     username = db.Column(db.String(80), unique=True, nullable=False)
     email = db.Column(db.String(120), unique=True, nullable=False)
     password = db.Column(db.String(80), unique=False, nullable=False)
+    role = db.Column(db.String(45), unique=False, nullable=False, default='Administrator')
     profile = db.Column(db.String(80), unique=False, nullable=False, default='profile.jpg')
 
     def __repr__(self):

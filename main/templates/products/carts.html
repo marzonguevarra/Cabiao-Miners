@@ -1,6 +1,7 @@
 {% extends "layout.html" %}
-{% block content %}
 {% include "navbar.html" %}
+{% block content %}
+
 <div class="container-sm mt-3">
     {% include "_messages.html" %}
     <table class="table table-sm table-condensed table-striped table-hover">
@@ -13,8 +14,8 @@
             <th scope="col">Quantity</th>
             <th scope="col">Total Discount</th>
             <th scope="col">Subtotal</th>
-            <th scope="col">Update</th>
-            <th scope="col">Delete</th>
+            <th scope="col"></th>
+            <th scope="col"></th>
         </thead>
         <tbody>
             {% for key, product in session['Shoppingcart'].items() %}

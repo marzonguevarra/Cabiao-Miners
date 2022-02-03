@@ -31,6 +31,7 @@ def login():
         if user and bcrypt.check_password_hash(user.password, form.password.data):
             session['email'] = form.email.data
             session['name'] = user.name
+            session['role'] = user.role
             session['profile'] = user.profile
             # flash(f'Welcome {user.name}, You are logged successfully')
             return redirect(request.args.get('next') or url_for('admin'))
@@ -41,6 +42,9 @@ def login():
 @app.route('/admin/logout')
 def logout():
     session.pop('email', None)
+    session.pop('name', None)
+    session.pop('role', None)
+    session.pop('profile', None)
     return redirect(url_for('login'))
 
 
@@ -52,7 +56,7 @@ def admin():
     products = tblProducts.query.all()
     return render_template('admin/index.html', title="Admin Portal", products=products)
 
-@app.route('/brands')
+@app.route('/admin/brands')
 def brand():
     if 'email' not in session:
         flash(f'Please login first','danger')
@@ -60,7 +64,7 @@ def brand():
     brands = Brand.query.order_by(Brand.id.desc()).all()
     return render_template('admin/brand.html', title="Brand Page", brands=brands)
 
-@app.route('/category')
+@app.route('/admin/categories')
 def category():
     if 'email' not in session:
         flash(f'Please login first','danger')
@@ -68,12 +72,11 @@ def category():
     categories = Category.query.order_by(Category.id.desc()).all()
     return render_template('admin/brand.html', title="Category Page", categories=categories)
 
+
 @app.route('/orderlists')
 def orderlists():
     if 'email' in session:
-        orders = tblOrders.query.order_by(tblOrders.id.desc()).all()
-        # customer = tblCustomers.query.filter_by(id=orders.customer_id).order_by(tblCustomers.id.desc()).first()
-        # for _key, product in orders.orders.items():
+        orders = db.session.query(tblOrders, tblCustomers).join(tblCustomers).order_by(tblOrders.id.desc()).all()
     else:
         return redirect(url_for('customerLogin'))
     return render_template('admin/orders.html', orders=orders, title = "Order Lists")
@@ -83,7 +86,7 @@ def orderdetails(invoice):
     if 'email' in session:
         grandtotal = 0
         subtotal = 0
-        orders = tblOrders.query.order_by(tblOrders.id.desc()).first()
+        orders = tblOrders.query.filter_by(invoice=invoice).order_by(tblOrders.id.desc()).first()
         customer = tblCustomers.query.filter_by(id=orders.customer_id).first()
         for _key, product in orders.orders.items():
             subtotal += float(product['price']) * int(product['quantity'])  
@@ -92,5 +95,44 @@ def orderdetails(invoice):
             grandtotal = float("%.2f" % (1.00 * subtotal))
     else:
         return redirect(url_for('customerLogin'))
-    return render_template('admin/orderdetails.html', invoice=invoice, customer=customer, subtotal=subtotal, grandtotal=grandtotal, orders=orders, title = "Order Details")
+    return render_template('admin/orderdetails.html',
+    invoice=invoice, customer=customer, subtotal=subtotal, grandtotal=grandtotal, orders=orders, title = "Order Details")
 
+@app.route('/acceptorder/<int:id>', methods=['POST'])
+def acceptorder(id):
+    if 'email' not in session:
+        flash(f'Please login first','danger')
+        return redirect(url_for('login'))
+    updatestatus = tblOrders.query.get_or_404(id)
+    status = 'In-Progress'
+    if request.method == "POST":
+        updatestatus.status = status
+        flash(f'You have accepted the order!','warning')
+        db.session.commit()
+        return redirect(url_for('orderlists'))
+
+@app.route('/completeorder/<int:id>', methods=['POST'])
+def completeorder(id):
+    if 'email' not in session:
+        flash(f'Please login first','danger')
+        return redirect(url_for('login'))
+    updatestatus = tblOrders.query.get_or_404(id)
+    status = 'Completed'
+    if request.method == "POST":
+        updatestatus.status = status
+        flash(f'You have completed the order!','success')
+        db.session.commit()
+        return redirect(url_for('orderlists'))
+
+@app.route('/cancelorder/<int:id>', methods=['POST'])
+def cancelorder(id):
+    if 'email' not in session:
+        flash(f'Please login first','danger')
+        return redirect(url_for('login'))
+    updatestatus = tblOrders.query.get_or_404(id)
+    status = 'Canceled'
+    if request.method == "POST":
+        updatestatus.status = status
+        flash(f'You have completed the order!','success')
+        db.session.commit()
+        return redirect(url_for('orderlists'))

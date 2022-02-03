@@ -75,7 +75,7 @@ def orders(invoice):
             grandtotal = float("%.2f" % (1.00 * subtotal))
     else:
         return redirect(url_for('customerLogin'))
-    return render_template('customers/order.html', invoice=invoice, subtotal=subtotal, grandtotal=grandtotal, customer=customer, orders=orders,brands=brands(), categories=categories(), title = "Orders")
+    return render_template('customers/orders.html', invoice=invoice, subtotal=subtotal, grandtotal=grandtotal, customer=customer, orders=orders,brands=brands(), categories=categories(), title = "Orders")
 
 
 @app.route('/get_pdf/<invoice>', methods=['POST'])

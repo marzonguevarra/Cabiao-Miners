@@ -1,25 +1,26 @@
 {% extends "layout.html" %}
+{% include "sidebar.html" %}
 {% block content %}
-{% include "admin_navbar.html" %}
+
 {% include "_messages.html" %}
 
-<div class="container-sm mt-3">
-    <table class="table table-sm table-condensed table-striped table-hover">
+<div style="overflow-x:auto;">
+    <table class="table table-sm table-hover">
         <thead>
-            <th scope="col">#</th>
-            <th scope="col">Name</th>
-            <th scope="col">Edit</th>
-            <th scope="col">Delete</th>
+            <th class="text-center" scope="col">#</th>
+            <th class="text-center" scope="col">Name</th>
+            <th class="text-center" scope="col"></th>
+            <th class="text-center" scope="col"></th>
         </thead>
         <tbody>
 
             {% if brands %}
             {% for brand in brands %}
             <tr>
-                <th scope="row">{{ loop.index}}</td>
-                <td>{{ brand.name }}</td>
-                <td><a href="{{url_for('updatebrand', id=brand.id)}}" class="btn btn-sm btn-outline-info"> Edit  </a></td>
-                <td>
+                <th class="text-center" scope="row">{{ loop.index}}</td>
+                <td class="text-left">{{ brand.name }}</td>
+                <td class="text-center"><a href="{{url_for('updatebrand', id=brand.id)}}" class="btn btn-sm btn-outline-info"> Edit  </a></td>
+                <td class="text-center">
                     <button type="button" class="btn btn-sm btn-outline-danger" data-bs-toggle="modal" data-bs-target="#Modal-{{brand.id}}">
                         Delete
                     </button>
@@ -51,10 +52,10 @@
 
             {% for category in categories %}
             <tr>
-                <th scope="row">{{ loop.index}}</td>
-                <td>{{ category.name }}</td>
-                <td><a href="{{url_for('updatecategory', id=category.id)}}" class="btn btn-sm btn-outline-info"> Edit  </a></td>
-                <td>
+                <th class="text-center" scope="row">{{ loop.index}}</td>
+                <td class="text-left">{{ category.name }}</td>
+                <td class="text-center"><a href="{{url_for('updatecategory', id=category.id)}}" class="btn btn-sm btn-outline-info"> Edit  </a></td>
+                <td class="text-center">
                     <button type="button" class="btn btn-sm btn-outline-danger" data-bs-toggle="modal" data-bs-target="#Modal-{{category.id}}">
                         Delete
                     </button>

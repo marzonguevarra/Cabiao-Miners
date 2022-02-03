@@ -1,10 +1,11 @@
 {% extends "layout.html" %}
+{% include "sidebar.html" %}
 {% block content %}
-{% include "admin_navbar.html" %}
+
 
 <div class="container">
     <div class="row">
-            <div class="col-md-3">     </div>
+            <div class="col-md-3"></div>
         <div class="col-md-6"> 
             {% include "_messages.html" %}
             <div class='text-center h3'> Add Product </div>
@@ -47,7 +48,7 @@
 
                 </div>
             </div>
-                <button type ="submit" class="btn btn-info mt-2"> Add Product </button>
+                <button type ="submit" class="btn btn-info float-right mt-2"> Add Product </button>
             </form>
         </div>
         <div class="col-md-3"> </div>
