@@ -1,11 +1,11 @@
 {% extends "layout.html" %}
-{% include "sidebar.html" %}
+{% include "navbar.html" %}
 {% block content %}
 <link rel="stylesheet" href="{{ url_for('static', filename='css/orders.css')}}">
 {% include "_messages.html" %}
 
 <div style="overflow-x:auto;">
-<h2>Manage Orders</h2>
+<h2>My Orders</h2>
 
 <div class="tab">
 {% if openCount > 0 %}
@@ -50,7 +50,7 @@
                 <td class="text-center">{{customer.name}}</td>
                 <td class="text-center">{{order.status}}</td>
                 <td class="text-center">{{order.datecreated.strftime('%Y-%m-%d')}}</td>
-                <td class="text-center"><a href="{{url_for('orderdetails', invoice=order.invoice)}}" class="btn btn-sm btn-info bi bi-search"> View </a></td>
+                <td class="text-center"><a href="{{url_for('orders', invoice=order.invoice)}}" class="btn btn-sm btn-info bi bi-search"> View </a></td>
             </tr>
             {% endfor %}
         </tbody>
@@ -76,7 +76,7 @@
                 <td class="text-center">{{customer.name}}</td>
                 <td class="text-center">{{order.status}}</td>
                 <td class="text-center">{{order.datecreated.strftime('%Y-%m-%d')}}</td>
-                <td class="text-center"><a href="{{url_for('orderdetails', invoice=order.invoice)}}" class="btn btn-sm btn-info bi bi-search"> View </a></td>
+                <td class="text-center"><a href="{{url_for('orders', invoice=order.invoice)}}" class="btn btn-sm btn-info bi bi-search"> View </a></td>
             </tr>
             {% endfor %}
         </tbody>
@@ -103,7 +103,7 @@
                 <td class="text-center">{{customer.name}}</td>
                 <td class="text-center">{{order.status}}</td>
                 <td class="text-center">{{order.datecreated.strftime('%Y-%m-%d')}}</td>
-                <td class="text-center"><a href="{{url_for('orderdetails', invoice=order.invoice)}}" class="btn btn-sm btn-info bi bi-search"> View </a></td>
+                <td class="text-center"><a href="{{url_for('orders', invoice=order.invoice)}}" class="btn btn-sm btn-info bi bi-search"> View </a></td>
             </tr>
             {% endfor %}
         </tbody>

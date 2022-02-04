@@ -1,4 +1,5 @@
 from flask import render_template, session, request, redirect, url_for, flash, current_app, make_response
+from sqlalchemy import or_, and_
 from flask_login import login_required, current_user, logout_user, login_user
 from main import db, app, photos, search, bcrypt, login_manager
 from main.forms.customers import CustomerRegisterForm, CustomerLoginForm
@@ -101,3 +102,18 @@ def get_pdf(invoice):
             response.headers['content-Disposition']='attached; filename='+invoice+'.pdf'
             return response
     return redirect(url_for('orders'))
+
+@app.route('/myorders')
+@login_required
+def myorders():
+    if current_user.is_authenticated:
+        orders = db.session.query(tblOrders, tblCustomers).join(tblCustomers).filter(and_(tblOrders.customer_id==current_user.id)).order_by(tblOrders.id.desc()).all()
+        open = db.session.query(tblOrders, tblCustomers).join(tblCustomers).filter(or_(tblOrders.status=='New', tblOrders.status=='In-Progress'),and_(tblOrders.customer_id==current_user.id)).order_by(tblOrders.id.desc()).all()
+        completed = db.session.query(tblOrders, tblCustomers).join(tblCustomers).filter(and_(tblOrders.customer_id==current_user.id, tblOrders.status=='Completed')).order_by(tblOrders.id.desc()).all()
+        canceled = db.session.query(tblOrders, tblCustomers).join(tblCustomers).filter(and_(tblOrders.customer_id==current_user.id, tblOrders.status=='Canceled')).order_by(tblOrders.id.desc()).all()
+        openCount = db.session.query(tblOrders, tblCustomers).join(tblCustomers).filter(or_(tblOrders.status=='New', tblOrders.status=='In-Progress'),and_(tblOrders.customer_id==current_user.id)).order_by(tblOrders.id.desc()).count()
+        completedCount = db.session.query(tblOrders, tblCustomers).join(tblCustomers).filter(and_(tblOrders.customer_id==current_user.id, tblOrders.status=='Completed')).order_by(tblOrders.id.desc()).count()
+        canceledCount =db.session.query(tblOrders, tblCustomers).join(tblCustomers).filter(and_(tblOrders.customer_id==current_user.id, tblOrders.status=='Canceled')).order_by(tblOrders.id.desc()).count()
+    else:
+        return redirect(url_for('customerLogin'))
+    return render_template('customers/myorders.html', orders=orders, open=open, completed=completed, canceled=canceled, openCount=openCount, completedCount=completedCount, canceledCount=canceledCount, title = "My Orders")

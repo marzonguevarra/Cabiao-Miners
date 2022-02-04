@@ -6,6 +6,11 @@ from flask_msearch import Search
 from flask_login import LoginManager
 from flask_migrate import Migrate
 import os
+from vonage import vonage
+
+
+client = vonage.Client(key="d0ec6aac", secret="A56jvJwtgb114evh")
+sms = vonage.Sms(client)
 
 basedir = os.path.abspath(os.path.dirname(__file__))
 app = Flask(__name__)

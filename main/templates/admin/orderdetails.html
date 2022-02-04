@@ -66,10 +66,7 @@
                 </form>
                 {% elif orders.status == 'Canceled' %}
                 <form action="{{url_for('acceptorder', id=orders.id)}}" method='POST'>
-                    <td class="text-center"><button type="submit"  class="btn btn-sm btn-warning"> Re-Open </button></td>
-                </form>
-                <form action="{{url_for('cancelorder', id=orders.id)}}" method='POST'>
-                    <td class="text-center"><button type="submit"  class="btn btn-sm btn-danger"> Cancel </button></td>
+                    <td class="text-center" colspan="2"><button type="submit"  class="btn btn-sm btn-warning"> Re-Open </button></td>
                 </form>
                 {% else %}
                 <form action="{{url_for('acceptorder', id=orders.id)}}" method='POST'>

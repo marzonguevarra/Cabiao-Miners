@@ -5,7 +5,7 @@
   <div class="header-right">
       {% if current_user.is_authenticated %}
       <a href="{{url_for('GetCart')}}" style="width:auto;">Cart <span class="badge badge-danger"> {{session['Shoppingcart']|length}}  </span> </a>
-      <a href="/login" style="width:auto;">My Orders</a>
+      <a href="/myorders" style="width:auto;">My Orders</a>
       <a href="/logout" style="width:auto;">{{current_user.name}}</a>
       {% else %}
       <a href="/login" style="width:auto;">Login</a>

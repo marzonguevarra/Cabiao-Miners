@@ -1,6 +1,7 @@
 from flask import render_template, session, request, redirect, url_for, flash, current_app
 from main import db, app, photos, search
 from main.models.products import Brand, Category, tblProducts
+from main.models.customers import tblOrders, tblCustomers
 from main.forms.products import ProductForm
 import secrets, os
 
@@ -11,6 +12,10 @@ def brands():
 def categories():
     categories = Category.query.join(tblProducts,(Category.id == tblProducts.category_id)).all()
     return categories
+
+def newordercount():
+    newordercount = db.session.query(tblOrders, tblCustomers).join(tblCustomers).filter(tblOrders.status=='New').order_by(tblOrders.id.desc()).count()
+    return newordercount
 
 @app.route('/')
 def home():
@@ -60,7 +65,7 @@ def addbrand():
         flash(f'The Brand {getbrand} was added to your database','success')
         db.session.commit()
         return redirect(url_for('addbrand'))
-    return render_template('products/addbrand.html', brand='brand', title='Add Brand Page')
+    return render_template('products/addbrand.html', brand='brand', title='Add Brand Page', newordercount=newordercount())
 
 
 @app.route('/updatebrand/<int:id>', methods=['GET', 'POST'])
@@ -75,7 +80,7 @@ def updatebrand(id):
         flash(f'Your Brand has been updated','success')
         db.session.commit()
         return redirect(url_for('brand'))
-    return render_template('products/updatebrand.html', title='Update Brand Page', updatebrand=updatebrand)
+    return render_template('products/updatebrand.html', title='Update Brand Page', updatebrand=updatebrand, newordercount=newordercount())
 
 @app.route('/deletebrand/<int:id>', methods=['POST'])
 def deletebrand(id):
@@ -101,7 +106,7 @@ def addcategory():
         flash(f'The Category {getcategory} was added to your database','success')
         db.session.commit()
         return redirect(url_for('addcategory'))
-    return render_template('products/addbrand.html', category='category', title='Add Category Page')
+    return render_template('products/addbrand.html', category='category', title='Add Category Page', newordercount=newordercount())
 
 
 @app.route('/updatecategory/<int:id>', methods=['GET', 'POST'])
@@ -116,7 +121,7 @@ def updatecategory(id):
         flash(f'Your Category has been updated','success')
         db.session.commit()
         return redirect(url_for('category'))
-    return render_template('products/updatebrand.html', title='Update Category Page', updatecategory=updatecategory)
+    return render_template('products/updatebrand.html', title='Update Category Page', updatecategory=updatecategory, newordercount=newordercount())
 
 @app.route('/deletecategory/<int:id>', methods=['POST'])
 def deletecategory(id):
@@ -157,7 +162,7 @@ def addproduct():
         flash(f'The Product {name} has been added to your database','success')
         db.session.commit()
         return redirect(url_for('admin'))
-    return render_template('products/addproduct.html', title='Add Product Page', form=form, brands=brands, categories=categories)
+    return render_template('products/addproduct.html', title='Add Product Page', form=form, brands=brands, categories=categories, newordercount=newordercount())
 
 @app.route('/updateproduct/<int:id>', methods=['GET', 'POST'])
 def updateproduct(id):
@@ -210,7 +215,7 @@ def updateproduct(id):
     form.stock.data = product.stock
     form.colors.data = product.colors
     form.description.data = product.description
-    return render_template('products/updateproduct.html', title='Update Product Page', form=form, brands=brands, categories=categories, product=product)
+    return render_template('products/updateproduct.html', title='Update Product Page', form=form, brands=brands, categories=categories, product=product, newordercount=newordercount())
 
 @app.route('/deleteproduct/<int:id>', methods=['POST'])
 def deleteproduct(id):

@@ -1,10 +1,15 @@
 from flask import render_template, session, request, redirect, url_for, flash
-from main import app, db, bcrypt
+from sqlalchemy import or_
+from main import app, db, bcrypt, vonage,  sms
 from main.forms.admin import AdminRegistrationForm, AdminLoginForm
 from main.models.admin import tblAdmins
 from main.models.products import tblProducts, Brand, Category
 from main.models.customers import tblOrders, tblCustomers
+from main.routes.products import newordercount
 import os
+
+
+    
 
 
 #admin account
@@ -54,7 +59,7 @@ def admin():
         flash(f'Please login first','danger')
         return redirect(url_for('login'))
     products = tblProducts.query.all()
-    return render_template('admin/index.html', title="Admin Portal", products=products)
+    return render_template('admin/index.html', title="Admin Portal", products=products, newordercount=newordercount())
 
 @app.route('/admin/brands')
 def brand():
@@ -62,7 +67,7 @@ def brand():
         flash(f'Please login first','danger')
         return redirect(url_for('login'))
     brands = Brand.query.order_by(Brand.id.desc()).all()
-    return render_template('admin/brand.html', title="Brand Page", brands=brands)
+    return render_template('admin/brand.html', title="Brand Page", brands=brands, newordercount=newordercount())
 
 @app.route('/admin/categories')
 def category():
@@ -70,16 +75,23 @@ def category():
         flash(f'Please login first','danger')
         return redirect(url_for('login'))
     categories = Category.query.order_by(Category.id.desc()).all()
-    return render_template('admin/brand.html', title="Category Page", categories=categories)
+    return render_template('admin/brand.html', title="Category Page", categories=categories, newordercount=newordercount())
 
 
 @app.route('/orderlists')
 def orderlists():
     if 'email' in session:
         orders = db.session.query(tblOrders, tblCustomers).join(tblCustomers).order_by(tblOrders.id.desc()).all()
+        open = db.session.query(tblOrders, tblCustomers).join(tblCustomers).filter(or_(tblOrders.status=='New', tblOrders.status=='In-Progress')).order_by(tblOrders.id.desc()).all()
+        completed = db.session.query(tblOrders, tblCustomers).join(tblCustomers).filter(tblOrders.status=='Completed').order_by(tblOrders.id.desc()).all()
+        canceled = db.session.query(tblOrders, tblCustomers).join(tblCustomers).filter(tblOrders.status=='Canceled').order_by(tblOrders.id.desc()).all()
+        openCount = db.session.query(tblOrders, tblCustomers).join(tblCustomers).filter(or_(tblOrders.status=='New', tblOrders.status=='In-Progress')).order_by(tblOrders.id.desc()).count()
+        completedCount = db.session.query(tblOrders, tblCustomers).join(tblCustomers).filter(tblOrders.status=='Completed').order_by(tblOrders.id.desc()).count()
+        canceledCount = db.session.query(tblOrders, tblCustomers).join(tblCustomers).filter(tblOrders.status=='Canceled').order_by(tblOrders.id.desc()).count()
+
     else:
         return redirect(url_for('customerLogin'))
-    return render_template('admin/orders.html', orders=orders, title = "Order Lists")
+    return render_template('admin/orders.html', orders=orders, open=open, completed=completed, canceled=canceled, openCount=openCount, completedCount=completedCount, canceledCount=canceledCount, newordercount=newordercount(), title = "Order Lists")
 
 @app.route('/orderdetails/<invoice>')
 def orderdetails(invoice):
@@ -96,19 +108,31 @@ def orderdetails(invoice):
     else:
         return redirect(url_for('customerLogin'))
     return render_template('admin/orderdetails.html',
-    invoice=invoice, customer=customer, subtotal=subtotal, grandtotal=grandtotal, orders=orders, title = "Order Details")
+    invoice=invoice, customer=customer, subtotal=subtotal, grandtotal=grandtotal, orders=orders, newordercount=newordercount(), title = "Order Details")
 
 @app.route('/acceptorder/<int:id>', methods=['POST'])
 def acceptorder(id):
     if 'email' not in session:
         flash(f'Please login first','danger')
         return redirect(url_for('login'))
-    updatestatus = tblOrders.query.get_or_404(id)
+    order = tblOrders.query.get_or_404(id)
     status = 'In-Progress'
+    customer = tblCustomers.query.filter_by(id=order.customer_id).first()
     if request.method == "POST":
-        updatestatus.status = status
+        order.status = status
         flash(f'You have accepted the order!','warning')
         db.session.commit()
+        responseData = sms.send_message(
+            {  
+            "from": "Online Miners",
+            "to": "+63" + str(customer.number) ,
+            "text": f"Hi {customer.name}, Greetings from Online Miners we are now preparing your orders, Reference Number: {order.invoice} Thank you!",
+            }
+        )
+        if responseData["messages"][0]["status"] == "0":
+            print(f"Message sent successfully to {customer.number}")
+        else:
+            print(f"Message failed with error: {responseData['messages'][0]['error-text']}")
         return redirect(url_for('orderlists'))
 
 @app.route('/completeorder/<int:id>', methods=['POST'])
@@ -116,10 +140,10 @@ def completeorder(id):
     if 'email' not in session:
         flash(f'Please login first','danger')
         return redirect(url_for('login'))
-    updatestatus = tblOrders.query.get_or_404(id)
+    order = tblOrders.query.get_or_404(id)
     status = 'Completed'
     if request.method == "POST":
-        updatestatus.status = status
+        order.status = status
         flash(f'You have completed the order!','success')
         db.session.commit()
         return redirect(url_for('orderlists'))
@@ -129,10 +153,10 @@ def cancelorder(id):
     if 'email' not in session:
         flash(f'Please login first','danger')
         return redirect(url_for('login'))
-    updatestatus = tblOrders.query.get_or_404(id)
+    order = tblOrders.query.get_or_404(id)
     status = 'Canceled'
     if request.method == "POST":
-        updatestatus.status = status
+        order.status = status
         flash(f'You have completed the order!','success')
         db.session.commit()
         return redirect(url_for('orderlists'))
