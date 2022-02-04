@@ -1,46 +1,81 @@
 {% extends "layout.html" %}
+{% include "sidebar.html" %}
 {% block content %}
-{% include "admin_navbar.html" %}
-<div class="container-sm mt-3">
-    {% include "_messages.html" %}
-    <div class="row">
-        <div class="col-md-12">
-            <p>Invoice: {{orders.invoice}}</p> 
-            <p>Customer Name: {{customer.name}}</p> 
-            <p>Customer Email: {{customer.email}}</p> 
-            <p>Customer Contact: {{customer.number}}</p> 
-        </div>
-    </div>
-    <table class="table table-sm table-condensed table-striped table-hover">
+
+{% include "_messages.html" %}
+<div style="overflow-x:auto;">
+    <h6> Customer Details </h6>
+    <table class="table table-sm">        
         <thead>
-            <th scope="col">#</th>
-            <th scope="col">Name</th>
-            <th scope="col">Color</th>
-            <th scope="col">Price</th>
-            <th scope="col">Quantity</th>
-            <th scope="col">Total Discount</th>
-            <th scope="col">Subtotal</th>
+            <th class="text-center"scope="col">Invoice</th>
+            <th class="text-center"scope="col">Customer Name</th>
+            <th class="text-center"scope="col">Customer Email</th>
+            <th class="text-center"scope="col">Customer Contact</th>
+            <th class="text-center"scope="col">Customer Address</th>
+        </thead>
+        <tbody>
+
+            <tr>
+                <td class="text-center">{{orders.invoice}}</td>
+                <td class="text-center">{{customer.name}}</td>
+                <td class="text-center">{{customer.email}}</td>
+                <td class="text-center">{{customer.number}}</td>
+                <td class="text-center">{{customer.address}}</td>
+        </tbody>
+    </table>
+
+    <h6> Order Details </h6>
+    <table class="table table-sm table-hover">        
+        <thead>
+            <th class="text-center"scope="col">#</th>
+            <th class="text-center"scope="col">Name</th>
+            <th class="text-center"scope="col">Color</th>
+            <th class="text-center"scope="col">Price</th>
+            <th class="text-center"scope="col">Quantity</th>
+            <th class="text-center"scope="col">Total Discount</th>
+            <th class="text-center"scope="col">Subtotal</th>
         </thead>
         <tbody>
             {% for key, product in orders.orders.items() %}
             <tr>
-                <th scope="row">{{loop.index}}</td>
-                <td>{{product.name}}</td>
-                <td>{{product.color}}</td>
-                <td>₱{{product.price}}</td>
-                <td>{{product.quantity}}</td>
+                <th class="text-center"scope="row">{{loop.index}}</td>
+                <td class="text-left">{{product.name}}</td>
+                <td class="text-center">{{product.color}}</td>
+                <td class="text-center">₱{{product.price}}</td>
+                <td class="text-center">{{product.quantity}}</td>
                 {% set discount = "%0.2f" |format(product.discount|float * product.quantity|int) %}
-                <td>₱{{discount}}</td>
+                <td class="text-center">₱{{discount}}</td>
                 {% set subtotal = "%0.2f" |format(product.price|float * product.quantity|int - discount|float ) %}
-                <td>₱{{subtotal}}</td>
+                <td class="text-center">₱{{subtotal}}</td>
             </tr>
             {% endfor %}
             <tr>
-                <td colspan="1"></td>
-                <td colspan="2"><h6>Grand Total : {{grandtotal}}</h6></td>
-                <td colspan="2"><h6>Status: {{orders.status}}</h6></td>
-                <td><a href="{{url_for('get_order')}}" class="btn btn-sm btn-warning bi bi-check-lg"> Deliver </a></td>
-                <td><a href="{{url_for('clearcart')}}" class="btn btn-sm btn-danger bi bi-x-lg"> Cancel </a></td>
+                <td class="text-center" colspan="1"></td>
+                <td class="text-center" colspan="2"><h6>Grand Total : {{grandtotal}}</h6></td>
+                <td class="text-center" colspan="2"><h6>Status: {{orders.status}}</h6></td>
+                {% if orders.status == 'In-Progress' %}
+                <form action="{{url_for('completeorder', id=orders.id)}}" method='POST'>
+                    <td class="text-center"><button type="submit"  class="btn btn-sm btn-warning"> Complete </button></td>
+                </form>
+                <form action="{{url_for('cancelorder', id=orders.id)}}" method='POST'>
+                    <td class="text-center"><button type="submit"  class="btn btn-sm btn-danger"> Cancel </button></td>
+                </form>
+                {% elif orders.status == 'Completed' %}
+                <form action="{{url_for('get_pdf', invoice=orders.invoice)}}" method='POST'>
+                    <td class="text-center" colspan="2"><button type="submit" class="btn btn-sm btn-success"> Download PDF </button></td>
+                </form>
+                {% elif orders.status == 'Canceled' %}
+                <form action="{{url_for('acceptorder', id=orders.id)}}" method='POST'>
+                    <td class="text-center" colspan="2"><button type="submit"  class="btn btn-sm btn-warning"> Re-Open </button></td>
+                </form>
+                {% else %}
+                <form action="{{url_for('acceptorder', id=orders.id)}}" method='POST'>
+                    <td class="text-center"><button type="submit" class="btn btn-sm btn-warning"> Accept </button></td>
+                </form>
+                <form action="{{url_for('cancelorder', id=orders.id)}}" method='POST'>
+                    <td class="text-center"><button type="submit"  class="btn btn-sm btn-danger"> Cancel </button></td>
+                </form>                {% endif %}
+                
             </tr>
         </tbody>
     </table>

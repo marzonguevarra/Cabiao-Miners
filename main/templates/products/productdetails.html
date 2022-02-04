@@ -1,6 +1,7 @@
 {% extends "layout.html" %}
-{% block content %}
 {% include "navbar.html" %}
+{% block content %}
+
 
 <div class="container">
     <div class="row mt-3">
@@ -9,7 +10,7 @@
             width="370" height="370">
         </div>
         <div class="col-md-6">
-            <p><h4>Product Name: {{product.name}}</h4></p>
+            <p><h5>Product Name: {{product.name}}</h5></p>
             {% if product.discount > 0 %}
             <p> Original Price: ₱{{product.price}}</p>
             <p> Discount: ₱{{product.discount}}</p>

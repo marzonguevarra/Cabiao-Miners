@@ -12,48 +12,56 @@
   </head>
   <body>
     <div class="container-sm mt-3">
-
-        <div class="row">
-            <div class="col-md-12">
-                <p>Invoice: {{orders.invoice}}</p> 
-                <p>Status: {{orders.status}}</p> 
-                <p>Customer Name: {{customer.name}}</p> 
-                <p>Customer Email: {{customer.email}}</p> 
-                <p>Customer Contact: {{customer.number}}</p> 
-            </div>
-        </div>
+        <h6> Customer Details </h6>
+        <table class="table table-sm">        
+            <thead>
+                <th class="text-center"scope="col">Invoice</th>
+                <th class="text-center"scope="col">Customer Name</th>
+                <th class="text-center"scope="col">Customer Email</th>
+                <th class="text-center"scope="col">Customer Contact</th>
+            </thead>
+            <tbody>
+    
+                <tr>
+                    <td class="text-center">{{orders.invoice}}</td>
+                    <td class="text-center">{{customer.name}}</td>
+                    <td class="text-center">{{customer.email}}</td>
+                    <td class="text-center">{{customer.number}}</td>
+            </tbody>
+        </table>
+    <h6> Order Details </h6>
         <table class="table table-sm table-condensed table-striped table-hover">
             <thead>
-                <th scope="col">#</th>
-                <th scope="col">Name</th>
-                <th scope="col">Color</th>
-                <th scope="col">Price</th>
-                <th scope="col">Quantity</th>
-                <th scope="col">Total Discount</th>
-                <th scope="col">Subtotal</th>
+                <th class="text-center"scope="col">#</th>
+                <th class="text-center"scope="col">Name</th>
+                <th class="text-center"scope="col">Color</th>
+                <th class="text-center"scope="col">Price</th>
+                <th class="text-center"scope="col">Quantity</th>
+                <th class="text-center"scope="col">Total Discount</th>
+                <th class="text-center"scope="col">Subtotal</th>
             </thead>
             <tbody>
                 {% for key, product in orders.orders.items() %}
                 <tr>
-                    <th scope="row">{{loop.index}}</td>
-                    <td>{{product.name}}</td>
+                    <th class="text-center"scope="row">{{loop.index}}</td>
+                    <td class="text-center">{{product.name}}</td>
                     <form action="{{url_for('updatecart', code=key)}}" method="POST">
-                    <td>{{product.color}}</td>
-                    <td>₱{{product.price}}</td>
-                    <td>{{product.quantity}}</td>
+                    <td class="text-center">{{product.color}}</td>
+                    <td class="text-center">₱{{product.price}}</td>
+                    <td class="text-center">{{product.quantity}}</td>
                     {% set discount = "%0.2f" |format(product.discount|float * product.quantity|int) %}
-                    <td>₱{{discount}}</td>
+                    <td class="text-center">₱{{discount}}</td>
                     {% set subtotal = "%0.2f" |format(product.price|float * product.quantity|int - discount|float ) %}
-                    <td>₱{{subtotal}}</td>
+                    <td class="text-center">₱{{subtotal}}</td>
                 </tr>
                 {% endfor %}
 
                 {% set grandtotal = "%0.2f" |format(grandtotal|float ) %}
 
                 <tr>
-                    <td></td>
-                    <td colspan="5"><h6>Grand Total: </h6></td>
-                    <td colspan="2"> <h6>₱{{grandtotal}}</h6></td>
+                    <td class="text-center"></td>
+                    <td class="text-center" colspan="5"><h6>Grand Total: </h6></td>
+                    <td class="text-center" colspan="2"> <h6>₱{{grandtotal}}</h6></td>
                 </tr>
             </tbody>
         </table>

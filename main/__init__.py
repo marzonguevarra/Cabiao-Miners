@@ -6,10 +6,16 @@ from flask_msearch import Search
 from flask_login import LoginManager
 from flask_migrate import Migrate
 import os
+from vonage import vonage
+
+
+client = vonage.Client(key="d0ec6aac", secret="A56jvJwtgb114evh")
+sms = vonage.Sms(client)
 
 basedir = os.path.abspath(os.path.dirname(__file__))
 app = Flask(__name__)
-app.config['SQLALCHEMY_DATABASE_URI'] = 'sqlite:///cabiaominer.db'
+# app.config['SQLALCHEMY_DATABASE_URI'] = 'sqlite:///cabiaominer.db'
+app.config['SQLALCHEMY_DATABASE_URI'] = 'mysql://root:password@localhost/dbcabiaominers'
 app.config['SECRET_KEY']='ramlnyangforeversserdf'
 app.config['UPLOADED_PHOTOS_DEST'] = os.path.join(basedir, 'static/images')
 app.config['SQLALCHEMY_TRACK_MODIFICATIONS'] = True

@@ -16,14 +16,15 @@ def MagerDicts(dict1, dict2):
 def GetCart():
     if 'Shoppingcart' not in session or len(session['Shoppingcart']) <= 0:
         return redirect(url_for('home'))
-    subtotal = 0
-    grandtotal = 0
+    subtotals = 0
+    discounts = 0
+    grandtotals = 0
     for key, product in session['Shoppingcart'].items():
-        subtotal += float(product['price']) * int(product['quantity'])  
-        discount = float(product['discount']) * int(product['quantity'])
-        subtotal -= discount
-        grandtotal = float("%.2f" % (1.00 * subtotal))
-    return render_template('products/carts.html', title = "Carts", grandtotal=grandtotal, brands=brands(), categories=categories())
+        subtotals += float(product['price']) * int(product['quantity'])  
+        discounts += float(product['discount']) * int(product['quantity'])
+        subtotals -= discounts
+        grandtotals = float((subtotals - discounts))
+    return render_template('products/carts.html', title = "Carts", grandtotals=grandtotals, subtotals=subtotals , discounts=discounts, brands=brands(), categories=categories())
     
 @app.route('/addcart', methods=['POST'])
 def AddCart():

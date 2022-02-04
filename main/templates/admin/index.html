@@ -1,37 +1,38 @@
 {% extends "layout.html" %}
+{% include "sidebar.html" %}
 {% block content %}
-{% include "admin_navbar.html" %}
+
 {% include "_messages.html" %}
 
-<div class="container-sm mt-3">
-    <table class="table table-sm table-condensed table-striped">
+<div style="overflow-x:auto;">
+    <table class="table table-sm table-hover">
         <thead>
-            <th scope="col">#</th>
-            <th scope="col">Name</th>
-            <th scope="col">Price</th>
-            <th scope="col">Stock</th>
-            <th scope="col">Discount</th>
-            <th scope="col">Brand</th>
-            <th scope="col">Image</th>
-            <th scope="col">Edit</th>
-            <th scope="col">Delete</th>
+            <th class="text-center" scope="col">#</th>
+            <th class="text-center" scope="col">Name</th>
+            <th class="text-center" scope="col">Price</th>
+            <th class="text-center" scope="col">Stock</th>
+            <th class="text-center" scope="col">Discount</th>
+            <th class="text-center" scope="col">Brand</th>
+            <th class="text-center" scope="col">Image</th>
+            <th class="text-center" scope="col"></th>
+            <th class="text-center" scope="col"></th>
         </thead>
         <tbody>
             {% for product in products %}
             <tr>
-                <td scope="row">{{ loop.index}}</td>
-                <td>{{ product.name }}</td>
-                <td>{{ product.price }}</td>
-                <td>{{ product.stock }}</td>
-                <td>{{ product.discount }}</td>
-                <td>{{ product.brand.name }}</td>
-                <td><img src="{{ url_for('static', filename='images/' + product.image_1)}}" width="30", height="30"></td>
-                <td>
+                <th class="text-center" scope="row">{{ loop.index}}</td>
+                <td class="text-left">{{ product.name }}</td>
+                <td class="text-center">{{ product.price }}</td>
+                <td class="text-center">{{ product.stock }}</td>
+                <td class="text-center">{{ product.discount }}</td>
+                <td class="text-left">{{ product.brand.name }}</td>
+                <td class="text-center"><img src="{{ url_for('static', filename='images/' + product.image_1)}}" width="30", height="30"></td>
+                <td class="text-center">
                   <a href="{{url_for('updateproduct', id=product.id)}}"> <button type="button" class="btn btn-outline-info btn-sm" >
                       Edit
                     </button></a>
                 </td>
-                <td>
+                <td class="text-center">
                     <button type="button" class="btn btn-outline-danger btn-sm" data-bs-toggle="modal" data-bs-target="#Modal-{{product.id}}">
                       Delete
                     </button>

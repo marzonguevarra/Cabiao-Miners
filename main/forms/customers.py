@@ -1,4 +1,4 @@
-from wtforms import Form, BooleanField, StringField, PasswordField, SubmitField, ValidationError, validators
+from wtforms import Form, BooleanField, StringField, PasswordField, SubmitField, IntegerField, ValidationError, validators
 from flask_wtf.file import FileRequired,FileAllowed,FileField
 from flask_wtf import FlaskForm
 from main.models.customers import tblCustomers
@@ -10,7 +10,7 @@ class CustomerRegisterForm(FlaskForm):
     password = PasswordField('Password: ',[validators.DataRequired(), validators.EqualTo('confirm')])
     confirm = PasswordField('Confirm Password: ',[validators.DataRequired()])
     address = StringField('Delivery Address: ',[validators.DataRequired()])
-    number = StringField('Contact Number: ',[validators.DataRequired()])
+    number = IntegerField('Contact Number: ',[validators.DataRequired()])
     profile = FileField('Profile: ', validators=[FileAllowed(['jpg','png','jpeg'])])
 
     def validate_username(self, username):
