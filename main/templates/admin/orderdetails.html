@@ -39,7 +39,7 @@
             {% for key, product in orders.orders.items() %}
             <tr>
                 <th class="text-center"scope="row">{{loop.index}}</td>
-                <td class="text-left">{{product.name}}</td>
+                <td class="text-left">{{key}}</td>
                 <td class="text-center">{{product.color}}</td>
                 <td class="text-center">₱{{product.price}}</td>
                 <td class="text-center">{{product.quantity}}</td>

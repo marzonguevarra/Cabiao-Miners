@@ -155,8 +155,14 @@ def cancelorder(id):
         return redirect(url_for('login'))
     order = tblOrders.query.get_or_404(id)
     status = 'Canceled'
+    orders = tblOrders.query.filter_by(id=id).order_by(tblOrders.id.desc()).first()
+    for _key, product in orders.orders.items():
+                x = tblProducts.query.get_or_404(_key)
+                stocks = x.stock + product['quantity']
+                x.stock = stocks
+                db.session.commit()     
     if request.method == "POST":
         order.status = status
-        flash(f'You have completed the order!','success')
+        flash(f'You have canceled the order!','danger')
         db.session.commit()
         return redirect(url_for('orderlists'))

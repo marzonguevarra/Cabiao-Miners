@@ -42,8 +42,11 @@ def AddCart():
                     session.modified = True
                     for key, item in session['Shoppingcart'].items():
                         if int(key) == int(product_id):
-                            item['quantity'] += 1
-                            flash(f"{item['quantity']} {product.name} has been added in your cart",'success')
+                            if item['quantity'] >= product.stock:
+                                flash(f"Only {product.stock} stocks are available for {product.name}",'danger')
+                            else:
+                                item['quantity'] += 1
+                                flash(f"{item['quantity']} {product.name} has been added in your cart",'success')
 
                 else:
                     session['Shoppingcart'] = MagerDicts(session['Shoppingcart'], DictItems)

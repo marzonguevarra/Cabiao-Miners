@@ -4,6 +4,7 @@ from flask_login import login_required, current_user, logout_user, login_user
 from main import db, app, photos, search, bcrypt, login_manager
 from main.forms.customers import CustomerRegisterForm, CustomerLoginForm
 from main.models.customers import tblCustomers, tblOrders
+from main.models.products import tblProducts
 from main.routes.products import brands, categories
 import secrets, os, json, pdfkit
 
@@ -40,6 +41,12 @@ def customerLogout():
     logout_user()
     return redirect(url_for('customerLogin'))
 
+def updateshoppingcart():
+    for key, shopping in session['Shoppingcart'].items():
+        session.modified = True
+        del shopping['image']
+        del shopping['colors']
+    return updateshoppingcart
 
 # customer order
 @app.route('/getOrder')
@@ -48,12 +55,20 @@ def get_order():
     if current_user.is_authenticated:
         customer_id = current_user.id
         invoice = secrets.token_hex(5)
+        updateshoppingcart()
         try:
             order = tblOrders(invoice=invoice, customer_id=customer_id, orders=session['Shoppingcart'])
             db.session.add(order)
             db.session.commit()
             flash(f'Your order has been sent','success')
             session.pop('Shoppingcart')
+            orders = tblOrders.query.filter_by(invoice=invoice).order_by(tblOrders.id.desc()).first()
+           
+            for _key, product in orders.orders.items():
+                x = tblProducts.query.get_or_404(_key)
+                stocks = x.stock - product['quantity']
+                x.stock = stocks
+                db.session.commit()
             return redirect(url_for('orders', invoice=invoice))
         except Exception as e:
             print(e)
